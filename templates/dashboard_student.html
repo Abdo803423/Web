@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}داشبورد الطالب — SkillBridge{% endblock %}
+{% block content %}
+
+<div class="page-header" style="background:linear-gradient(135deg,#1F1240,#5B21B6)">
+  <div class="page-header-inner">
+    <h1>أهلاً {{ user.name }} 👋</h1>
+    <p>تابع مهامك وتسليماتك ومحفظتك من هنا</p>
+  </div>
+</div>
+
+<section class="sec">
+  <!-- Stats -->
+  <div class="dash-stats rv">
+    <div class="dstat" style="border-top:3px solid var(--purple)">
+      <div class="dstat-icon" style="background:var(--purple-light)">⭐</div>
+      <div class="dstat-val">{{ user.points }}</div>
+      <div class="dstat-lbl">نقطة مكتسبة</div>
+    </div>
+    <div class="dstat" style="border-top:3px solid var(--gold)">
+      <div class="dstat-icon" style="background:var(--gold-light)">📋</div>
+      <div class="dstat-val">{{ submissions|length }}</div>
+      <div class="dstat-lbl">مهمة مسلّمة</div>
+    </div>
+    <div class="dstat" style="border-top:3px solid var(--green)">
+      <div class="dstat-icon" style="background:var(--green-light)">✅</div>
+      <div class="dstat-val">{{ submissions|selectattr('status','eq','approved')|list|length }}</div>
+      <div class="dstat-lbl">مهمة مقبولة</div>
+    </div>
+    <div class="dstat" style="border-top:3px solid #3B82F6">
+      <div class="dstat-icon" style="background:#EFF6FF">🏆</div>
+      <div class="dstat-val">{{ user.level }}</div>
+      <div class="dstat-lbl">المستوى الحالي</div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <!-- Submissions -->
+    <div>
+      <h2 class="dash-section-title">تسليماتي</h2>
+      {% if submissions %}
+      <div class="sub-list">
+        {% for sub in submissions %}
+        <div class="sub-card rv">
+          <div class="sub-card-top">
+            <div>
+              <div class="sub-title">{{ sub.title }}</div>
+              <div class="sub-company">{{ sub.company_name }}</div>
+              <div class="sub-date">{{ sub.submitted_at[:10] }}</div>
+            </div>
+            <div class="sub-right">
+              {% if sub.score %}
+                <div class="sub-score">{{ sub.score }}</div>
+                <div style="font-size:.75rem;color:var(--gray)">/ 100</div>
+              {% else %}
+                <div class="sub-score" style="font-size:1rem;color:var(--gray)">—</div>
+              {% endif %}
+              <span class="sbadge {{ 'sa' if sub.status=='approved' else 'sr' if sub.status=='pending' else 'se' }}">
+                {{ 'مقبول ✅' if sub.status=='approved' else 'قيد المراجعة ⏳' if sub.status=='pending' else 'مرفوض ❌' }}
+              </span>
+            </div>
+          </div>
+          {% if sub.feedback %}
+          <div class="sub-feedback">💬 {{ sub.feedback }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>لم تسلّم أي مهمة بعد</p>
+        <a class="btn-solid" href="{{ url_for('tasks') }}">استعرض المهام</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Open Tasks -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 class="dash-section-title" style="margin:0">مهام مفتوحة</h2>
+        <a class="btn-ghost" href="{{ url_for('tasks') }}">عرض الكل</a>
+      </div>
+      {% for task in open_tasks %}
+      <a class="mini-task-card rv" href="{{ url_for('task_detail', task_id=task.id) }}">
+        <div class="mini-task-left">
+          <div class="mini-dot" style="background:var(--purple)"></div>
+          <div>
+            <div class="mini-title">{{ task.title }}</div>
+            <div class="mini-co">{{ task.company_name }}</div>
+          </div>
+        </div>
+        <span class="pts">⭐ {{ task.points }}</span>
+      </a>
+      {% endfor %}
+      <a class="btn-gold" style="display:block;text-align:center;margin-top:16px;text-decoration:none" href="{{ url_for('tasks') }}"> ابدأ مهمة جديدة</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

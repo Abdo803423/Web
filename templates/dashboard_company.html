@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}داشبورد الشركة — SkillBridge{% endblock %}
+{% block content %}
+
+<div class="page-header" style="background:linear-gradient(135deg,#1F1240,#5B21B6)">
+  <div class="page-header-inner">
+    <h1>لوحة تحكم {{ user.name }} 🏢</h1>
+    <p>إدارة مهامك وتقييم تسليمات الطلاب</p>
+  </div>
+</div>
+
+<section class="sec">
+  <div class="dash-stats rv">
+    <div class="dstat" style="border-top:3px solid var(--purple)">
+      <div class="dstat-icon" style="background:var(--purple-light)">📋</div>
+      <div class="dstat-val">{{ my_tasks|length }}</div>
+      <div class="dstat-lbl">مهمة منشورة</div>
+    </div>
+    <div class="dstat" style="border-top:3px solid var(--gold)">
+      <div class="dstat-icon" style="background:var(--gold-light)">📥</div>
+      <div class="dstat-val">{{ pending_subs|length }}</div>
+      <div class="dstat-lbl">تسليم بانتظار التقييم</div>
+    </div>
+    <div class="dstat" style="border-top:3px solid var(--green)">
+      <div class="dstat-icon" style="background:var(--green-light)">✅</div>
+      <div class="dstat-val">{{ my_tasks|sum(attribute='sub_count') }}</div>
+      <div class="dstat-lbl">إجمالي التسليمات</div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px" class="rv">
+    <h2 class="dash-section-title" style="margin:0">مهامي المنشورة</h2>
+    <a class="btn-solid" href="{{ url_for('new_task') }}">+ نشر مهمة جديدة</a>
+  </div>
+
+  {% if my_tasks %}
+  <div class="tasks-grid rv">
+    {% for task in my_tasks %}
+    <a class="tcard" href="{{ url_for('task_detail', task_id=task.id) }}" style="text-decoration:none;color:inherit">
+      <div class="tcard-top">
+        <span class="dbadge {{ 'de' if task.difficulty=='سهل' else 'dm' if task.difficulty=='متوسط' else 'dh' }}">{{ task.difficulty }}</span>
+        <span style="font-size:.82rem;color:var(--gray)">{{ task.sub_count }} تسليم</span>
+      </div>
+      <div class="ttitle">{{ task.title }}</div>
+      <div class="tfoot" style="margin-top:14px">
+        <span class="dl">⏱ {{ task.deadline }}</span>
+        <span class="pts">⭐ {{ task.points }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state rv"><div class="empty-icon">📭</div><p>لم تنشر أي مهمة بعد</p><a class="btn-solid" href="{{ url_for('new_task') }}">+ نشر أول مهمة</a></div>
+  {% endif %}
+
+  <!-- Pending Reviews -->
+  {% if pending_subs %}
+  <h2 class="dash-section-title" style="margin-top:48px" class="rv">تسليمات تنتظر تقييمك</h2>
+  <div class="review-list">
+    {% for sub in pending_subs %}
+    <div class="review-card rv">
+      <div class="review-top">
+        <div>
+          <div class="review-student">{{ sub.student_name }}</div>
+          <div class="review-task">{{ sub.title }}</div>
+          <div class="sub-date">{{ sub.submitted_at[:10] }}</div>
+          {% if sub.link %}<a class="review-link" href="{{ sub.link }}" target="_blank">🔗 عرض العمل</a>{% endif %}
+          {% if sub.notes %}<p class="review-notes">📝 {{ sub.notes }}</p>{% endif %}
+        </div>
+      </div>
+      <form method="POST" action="{{ url_for('review_submission', sub_id=sub.id) }}" class="review-form">
+        <div style="display:flex;gap:12px;align-items:flex-end">
+          <div class="fg" style="flex:1;margin-bottom:0">
+            <label>التقييم (0-100)</label>
+            <input class="fc-l" type="number" name="score" min="0" max="100" placeholder="مثال: 85" required>
+          </div>
+          <div class="fg" style="flex:2;margin-bottom:0">
+            <label>ملاحظات للطالب</label>
+            <input class="fc-l" type="text" name="feedback" placeholder="عمل ممتاز! لكن...">
+          </div>
+          <button class="btn-solid" type="submit" style="white-space:nowrap">إرسال التقييم</button>
+        </div>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}الملف الشخصي — SkillBridge{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header-inner"><h1>الملف الشخصي</h1></div></div>
+<section class="sec" style="max-width:640px;margin:0 auto">
+  <div class="detail-card rv">
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border)">
+      <div class="big-avatar">{{ user.name[0] }}</div>
+      <div>
+        <div style="font-size:1.4rem;font-weight:900;color:var(--dark)">{{ user.name }}</div>
+        <div style="color:var(--gray);font-size:.9rem">{{ user.email }}</div>
+        <div style="margin-top:8px;display:flex;gap:10px">
+          <span class="pts">⭐ {{ user.points }} نقطة</span>
+          <span class="dbadge dm">المستوى {{ user.level }}</span>
+          <span class="dbadge {{ 'de' if user.role=='student' else 'sr' }}">{{ 'طالب' if user.role=='student' else 'شركة' }}</span>
+        </div>
+      </div>
+    </div>
+    <form method="POST" action="{{ url_for('profile') }}">
+      <div class="fg"><label>الاسم</label><input class="fc-l" type="text" name="name" value="{{ user.name }}" required></div>
+      <div class="fg"><label>نبذة تعريفية</label><textarea class="fc-l" name="bio" rows="4" placeholder="اكتب نبذة عنك...">{{ user.bio or '' }}</textarea></div>
+      <button class="btn-submit-full" type="submit">💾 حفظ التغييرات</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

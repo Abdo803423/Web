@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}إنشاء حساب — SkillBridge{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card rv">
+    <div class="auth-logo"><div class="logo-icon" style="width:48px;height:48px;font-size:1.4rem">S</div></div>
+    <h1 class="auth-title">🚀 انضم لـ SkillBridge</h1>
+    <p class="auth-sub">أنشئ حسابك مجاناً وابدأ رحلتك</p>
+    <form method="POST" action="{{ url_for('register') }}">
+      <!-- Role Selector -->
+      <div class="role-selector">
+        <label class="role-opt">
+          <input type="radio" name="role" value="student" checked>
+          <div class="role-card">
+            <span class="role-icon">🎓</span>
+            <span class="role-label">طالب</span>
+            <span class="role-desc">أنجز مهام واكسب خبرة</span>
+          </div>
+        </label>
+        <label class="role-opt">
+          <input type="radio" name="role" value="company">
+          <div class="role-card">
+            <span class="role-icon">🏢</span>
+            <span class="role-label">شركة</span>
+            <span class="role-desc">انشر مهام واكتشف المواهب</span>
+          </div>
+        </label>
+      </div>
+      <div class="fg">
+        <label>الاسم الكامل / اسم الشركة</label>
+        <input class="fc-l" type="text" name="name" placeholder="مثال: أحمد كريم" required>
+      </div>
+      <div class="fg">
+        <label>البريد الإلكتروني</label>
+        <input class="fc-l" type="email" name="email" placeholder="example@email.com" required>
+      </div>
+      <div class="fg">
+        <label>كلمة المرور</label>
+        <input class="fc-l" type="password" name="password" placeholder="8 أحرف على الأقل" minlength="6" required>
+      </div>
+      <button class="btn-submit-auth" type="submit">إنشاء الحساب ←</button>
+    </form>
+    <p class="auth-switch">عندك حساب؟ <a href="{{ url_for('login') }}">سجّل دخولك</a></p>
+  </div>
+</div>
+{% endblock %}

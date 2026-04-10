@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}تسجيل الدخول — SkillBridge{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card rv">
+    <div class="auth-logo"><div class="logo-icon" style="width:48px;height:48px;font-size:1.4rem">S</div></div>
+    <h1 class="auth-title">👋 مرحباً بعودتك</h1>
+    <p class="auth-sub">سجّل دخولك للوصول لمهامك ومحفظتك</p>
+    <form method="POST" action="{{ url_for('login') }}">
+      <div class="fg">
+        <label>البريد الإلكتروني</label>
+        <input class="fc-l" type="email" name="email" placeholder="example@email.com" required>
+      </div>
+      <div class="fg">
+        <label>كلمة المرور</label>
+        <input class="fc-l" type="password" name="password" placeholder="••••••••" required>
+      </div>
+      <button class="btn-submit-auth" type="submit">دخول ←</button>
+    </form>
+    <p class="auth-switch">مش عندك حساب؟ <a href="{{ url_for('register') }}">سجّل الآن</a></p>
+    <div class="demo-box">
+      <p><strong>حسابات تجريبية:</strong></p>
+      <p>🎓 طالب: ahmed@student.com / demo123</p>
+      <p>🏢 شركة: eco@ecoshop.com / demo123</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

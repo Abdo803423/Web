@@ -1,0 +1,41 @@
+<!-- ═══════════════════════════════════════════════════════
+     new_task.html
+═══════════════════════════════════════════════════════ -->
+{% extends "base.html" %}
+{% block title %}نشر مهمة جديدة — SkillBridge{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header-inner"><a class="back-link" href="{{ url_for('dashboard_company') }}">← العودة للداشبورد</a><h1>نشر مهمة جديدة</h1></div></div>
+<section class="sec" style="max-width:700px;margin:0 auto">
+  <div class="detail-card rv">
+    <form method="POST" action="{{ url_for('new_task') }}">
+      <div class="fg"><label>عنوان المهمة</label><input class="fc-l" type="text" name="title" placeholder="مثال: إعادة تصميم واجهة التطبيق" required></div>
+      <div class="fg"><label>وصف المهمة التفصيلي</label><textarea class="fc-l" name="description" rows="5" placeholder="اشرح المهمة بالتفصيل: الهدف، المتطلبات، التسليمات المطلوبة..." required></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="fg"><label>الفئة</label>
+          <select class="fc-l" name="category" required>
+            <option value="">-- اختر --</option>
+            <option value="design">تصميم</option>
+            <option value="dev">برمجة</option>
+            <option value="marketing">تسويق</option>
+            <option value="data">بيانات</option>
+          </select>
+        </div>
+        <div class="fg"><label>الصعوبة</label>
+          <select class="fc-l" name="difficulty" required>
+            <option value="">-- اختر --</option>
+            <option value="سهل">سهل</option>
+            <option value="متوسط">متوسط</option>
+            <option value="صعب">صعب</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="fg"><label>النقاط (10-200)</label><input class="fc-l" type="number" name="points" min="10" max="200" placeholder="مثال: 80" required></div>
+        <div class="fg"><label>آخر موعد للتسليم</label><input class="fc-l" type="date" name="deadline" required></div>
+      </div>
+      <div class="fg"><label>الوسوم (مفصولة بفاصلة)</label><input class="fc-l" type="text" name="tags" placeholder="مثال: Figma, UI/UX, Prototyping"></div>
+      <button class="btn-submit-full" type="submit">✅ نشر المهمة</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}SkillBridge — اربط مهاراتك بالواقع{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">✦ المنصة الأولى لربط الطلاب بالشركات</div>
+    <h1>اربط <em>مهاراتك</em><br>بمهام حقيقية من شركات حقيقية</h1>
+    <p>SkillBridge تمكّن الطلاب من اكتساب خبرة عملية حقيقية عبر إنجاز مهام من شركات فعلية وبناء محفظة أعمال موثّقة ومقيّمة.</p>
+    <div class="hero-actions">
+      <a class="btn-gold" href="{{ url_for('tasks') }}"> استعرض المهام</a>
+      <a class="btn-outline-white" href="{{ url_for('register') }}">أنشئ حسابك مجاناً</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="num">{{ stats.tasks }}+</div><div class="lbl">مهمة منشورة</div></div>
+      <div class="hstat"><div class="num">{{ stats.companies }}+</div><div class="lbl">شركة مشتركة</div></div>
+      <div class="hstat"><div class="num">{{ stats.students }}+</div><div class="lbl">طالب نشط</div></div>
+      <div class="hstat"><div class="num">{{ stats.submissions }}+</div><div class="lbl">تسليم مكتمل</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how">
+  <div class="rv sec-center">
+    <span class="chip">كيف يعمل</span>
+    <h2 class="sec-title">ثلاث خطوات فقط</h2>
+    <p class="sec-sub">نظام بسيط وفعّال يربط الشركات بأفضل المواهب الشابة.</p>
+  </div>
+  <div class="how-grid">
+    <div class="how-card rv">
+      <div class="how-num">01</div>
+      <div class="how-icon" style="background:#EDE9FE">📋</div>
+      <h3>الشركات ترفع المهام</h3>
+      <p>تنشر الشركات مهام حقيقية من مشاريعها الفعلية مع تفاصيل واضحة ونقاط مكافأة.</p>
+    </div>
+    <div class="how-card rv" style="transition-delay:.1s">
+      <div class="how-num">02</div>
+      <div class="how-icon" style="background:#D1FAE5">✅</div>
+      <h3>الطلاب ينجزون ويسلّمون</h3>
+      <p>يرفع الطلاب ملفات عملهم مباشرة على المنصة ويحصلون على تقييم موثّق.</p>
+    </div>
+    <div class="how-card rv" style="transition-delay:.2s">
+      <div class="how-num">03</div>
+      <div class="how-icon" style="background:#FEF3C7">📁</div>
+      <h3>كل مهمة تبني محفظتك</h3>
+      <p>كل مهمة منجزة تُضاف تلقائياً لمحفظتك الموثّقة وتزيد نقاطك ومستواك.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LATEST TASKS -->
+<section class="sec sec-white">
+  <div class="tasks-head rv">
+    <div>
+      <span class="chip">أحدث المهام</span>
+      <h2 class="sec-title">مهام مفتوحة الآن</h2>
+    </div>
+    <a class="btn-ghost" href="{{ url_for('tasks') }}">عرض الكل ←</a>
+  </div>
+  <div class="tasks-grid">
+    {% for task in tasks %}
+    <a class="tcard rv" href="{{ url_for('task_detail', task_id=task.id) }}" style="text-decoration:none;color:inherit">
+      <div class="tcard-top">
+        <div class="cbadge" style="background:{{ loop.cycle('#059669','#92400E','#1D4ED8','#16A34A','#7C3AED','#DB2777') }}18">
+          <div class="cdot" style="background:{{ loop.cycle('#059669','#92400E','#1D4ED8','#16A34A','#7C3AED','#DB2777') }}"></div>
+          <span style="color:{{ loop.cycle('#059669','#92400E','#1D4ED8','#16A34A','#7C3AED','#DB2777') }}">{{ task.company_name }}</span>
+        </div>
+        <span class="dbadge {{ 'de' if task.difficulty=='سهل' else 'dm' if task.difficulty=='متوسط' else 'dh' }}">{{ task.difficulty }}</span>
+      </div>
+      <div class="ttitle">{{ task.title }}</div>
+      <div class="tags">
+        {% for tag in task.tags.split(',') %}
+          <span class="tag">{{ tag.strip() }}</span>
+        {% endfor %}
+      </div>
+      <div class="tfoot">
+        <span class="dl">⏱ {{ task.deadline }}</span>
+        <span class="pts">⭐ {{ task.points }} نقطة</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec sec-dark" style="text-align:center">
+  <div class="rv">
+    <h2 class="sec-title" style="color:#fff;margin-bottom:16px">مستعد تبدأ؟</h2>
+    <p style="color:rgba(255,255,255,.7);margin-bottom:32px;font-size:1.05rem">أنشئ حسابك مجاناً وابدأ إنجاز مهام حقيقية اليوم</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn-gold" href="{{ url_for('register') }}">🎓 أنا طالب — انضم الآن</a>
+      <a class="btn-outline-white" href="{{ url_for('register') }}">🏢 أنا شركة — انشر مهمة</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}{{ task.title }} — SkillBridge{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <a href="{{ url_for('tasks') }}" class="back-link">← العودة للمهام</a>
+    <h1>{{ task.title }}</h1>
+    <p>{{ task.company_name }}</p>
+  </div>
+</div>
+
+<section class="sec">
+  <div class="detail-grid">
+    <!-- LEFT: Task Info -->
+    <div>
+      <div class="detail-card rv">
+        <div class="detail-company">
+          <div class="d-avatar">{{ task.company_name[0] }}</div>
+          <div>
+            <div class="d-name">{{ task.company_name }}</div>
+            <div class="d-email">{{ task.company_email }}</div>
+          </div>
+          <span class="verified-badge">✓ موثّق</span>
+        </div>
+
+        <div class="detail-stats">
+          <div class="ds-item">
+            <div class="ds-val" style="color:var(--gold)">{{ task.points }}</div>
+            <div class="ds-lbl">نقطة مكافأة</div>
+          </div>
+          <div class="ds-item">
+            <div class="ds-val" style="color:var(--purple)">{{ task.deadline }}</div>
+            <div class="ds-lbl">آخر موعد</div>
+          </div>
+          <div class="ds-item">
+            <div class="ds-val" style="color:var(--green)">{{ submissions_count }}</div>
+            <div class="ds-lbl">تسليم مستلم</div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>وصف المهمة</h3>
+          <p>{{ task.description }}</p>
+        </div>
+
+        <div class="detail-section">
+          <h3>المهارات المطلوبة</h3>
+          <div class="tags" style="margin-top:10px">
+            {% for tag in task.tags.split(',') %}
+              <span class="tag">{{ tag.strip() }}</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>ما ستكسبه</h3>
+          <ul class="gain-list">
+            <li>خبرة عملية حقيقية في مجالك</li>
+            <li>تقييم موثّق من الشركة</li>
+            <li>{{ task.points }} نقطة مضافة لملفك</li>
+            <li>مشروع في محفظة أعمالك</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Submit Form -->
+    <div>
+      {% if session.get('role') == 'student' %}
+        {% if already_submitted %}
+        <div class="submit-card submitted rv">
+          <div style="font-size:3rem;margin-bottom:16px">✅</div>
+          <h3>تم تسليم مهمتك!</h3>
+          <p>سيصلك التقييم من الشركة خلال 48 ساعة. تابع حالتها من داشبوردك.</p>
+          <a class="btn-solid" style="margin-top:20px;display:inline-block" href="{{ url_for('dashboard_student') }}">عرض داشبوردي</a>
+        </div>
+        {% else %}
+        <div class="submit-card rv">
+          <h3>📤 تسليم المهمة</h3>
+          <p style="color:var(--gray);font-size:.9rem;margin-bottom:24px">ارفع عملك وسيصلك التقييم خلال 48 ساعة</p>
+          <form method="POST" action="{{ url_for('submit_task', task_id=task.id) }}" enctype="multipart/form-data">
+            <div class="fg">
+              <label>رابط العمل (GitHub / Figma / Drive)</label>
+              <input class="fc-l" type="url" name="link" placeholder="https://...">
+            </div>
+            <div class="fg">
+              <label>ارفع ملف العمل</label>
+              <div class="drop" id="drop" onclick="document.getElementById('fi').click()" ondragover="dov(event)" ondrop="dop(event)" ondragleave="dlv()">
+                <div style="font-size:2rem;margin-bottom:8px">☁️</div>
+                <p style="font-size:.9rem">اسحب الملف هنا أو <strong style="color:var(--purple)">اضغط للاختيار</strong></p>
+                <p style="font-size:.78rem;color:var(--light-gray);margin-top:4px">PDF, ZIP, PNG, Figma — حتى 50MB</p>
+                <div id="fName" style="margin-top:8px;font-size:.85rem;color:var(--purple);font-weight:600"></div>
+              </div>
+              <input type="file" id="fi" name="file" style="display:none" onchange="fsel(this)">
+            </div>
+            <div class="fg">
+              <label>ملاحظات للشركة</label>
+              <textarea class="fc-l" name="notes" rows="3" placeholder="اكتب أي تفاصيل مهمة عن عملك..."></textarea>
+            </div>
+            <button class="btn-submit-full" type="submit">🚀 إرسال التسليم</button>
+          </form>
+        </div>
+        {% endif %}
+      {% elif session.get('role') == 'company' %}
+      <div class="submit-card rv" style="text-align:center">
+        <div style="font-size:3rem;margin-bottom:16px">🏢</div>
+        <h3>أنت مسجّل كشركة</h3>
+        <p style="color:var(--gray)">تسجيل الدخول كطالب لتسليم المهام</p>
+      </div>
+      {% else %}
+      <div class="submit-card rv" style="text-align:center">
+        <div style="font-size:3rem;margin-bottom:16px">🔐</div>
+        <h3>سجّل دخولك للتسليم</h3>
+        <p style="color:var(--gray);margin-bottom:20px">أنشئ حساباً مجانياً وابدأ إنجاز المهام</p>
+        <a class="btn-solid" style="display:inline-block" href="{{ url_for('register') }}">إنشاء حساب</a>
+        <a class="btn-ghost" style="display:inline-block;margin-top:10px" href="{{ url_for('login') }}">تسجيل الدخول</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+function fsel(i){const n=i.files[0]?.name;document.getElementById('fName').textContent=n?`📎 ${n}`:''}
+function dov(e){e.preventDefault();document.getElementById('drop').classList.add('over')}
+function dlv(){document.getElementById('drop').classList.remove('over')}
+function dop(e){e.preventDefault();dlv();const f=e.dataTransfer.files[0];if(f){document.getElementById('fName').textContent=`📎 ${f.name}`;const dt=new DataTransfer();dt.items.add(f);document.getElementById('fi').files=dt.files;}}
+</script>
+{% endblock %}

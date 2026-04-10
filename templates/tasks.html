@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}المهام — SkillBridge{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>المهام المتاحة</h1>
+    <p>{{ tasks|length }} مهمة مفتوحة تنتظرك</p>
+  </div>
+</div>
+
+<section class="sec">
+  <!-- Filters -->
+  <div class="tasks-head rv">
+    <div class="filters">
+      {% for cat, label in [('all','الكل'),('design','تصميم'),('dev','برمجة'),('marketing','تسويق'),('data','بيانات')] %}
+      <a class="ftab {{ 'active' if active_cat==cat }}" href="{{ url_for('tasks', cat=cat) }}">{{ label }}</a>
+      {% endfor %}
+    </div>
+    {% if session.get('role') == 'company' %}
+    <a class="btn-solid" href="{{ url_for('new_task') }}">+ نشر مهمة جديدة</a>
+    {% endif %}
+  </div>
+
+  {% if tasks %}
+  <div class="tasks-grid">
+    {% set colors = ['#059669','#92400E','#1D4ED8','#16A34A','#7C3AED','#DB2777'] %}
+    {% for task in tasks %}
+    <a class="tcard rv" href="{{ url_for('task_detail', task_id=task.id) }}" style="text-decoration:none;color:inherit">
+      <div class="tcard-top">
+        <div class="cbadge" style="background:{{ colors[loop.index0 % colors|length] }}20">
+          <div class="cdot" style="background:{{ colors[loop.index0 % colors|length] }}"></div>
+          <span style="color:{{ colors[loop.index0 % colors|length] }}">{{ task.company_name }}</span>
+        </div>
+        <span class="dbadge {{ 'de' if task.difficulty=='سهل' else 'dm' if task.difficulty=='متوسط' else 'dh' }}">{{ task.difficulty }}</span>
+      </div>
+      <div class="ttitle">{{ task.title }}</div>
+      <p style="font-size:.85rem;color:var(--gray);margin-bottom:12px;line-height:1.6">{{ task.description[:100] }}...</p>
+      <div class="tags">
+        {% for tag in task.tags.split(',') %}
+          <span class="tag">{{ tag.strip() }}</span>
+        {% endfor %}
+      </div>
+      <div class="tfoot" style="margin-top:14px">
+        <span class="dl">⏱ {{ task.deadline }}</span>
+        <span class="pts">⭐ {{ task.points }} نقطة</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>لا توجد مهام في هذه الفئة</h3>
+    <a class="btn-solid" href="{{ url_for('tasks') }}">عرض كل المهام</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
